@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "../User_Guide.ent">
+%BOOK_ENTITIES;
+]>
+
+<section id="ratype_ra_interface">
+
+	<title>Resource Adaptor Interface</title>
+
+    <indexterm><primary>Sbb interface</primary></indexterm>
+	<para>The &THIS.RA; Resource Adaptor interface of type <literal>org.mobicents.slee.resource.msrp.MsrpResourceAdaptorSbbInterface</literal>, that an Sbb can use to create msrp sessions (activities), is defined as follows:</para>
+
+	<programlisting language="Java" role="JAVA">
+		<![CDATA[
+package org.mobicents.slee.resource.msrp;
+
+import javax.net.msrp.exceptions.ParseException;
+import javax.sdp.SessionDescription;
+
+public interface MsrpResourceAdaptorSbbInterface {
+
+	public MsrpSession getMsrpSession(String sessionId);
+
+	public MsrpSession connect(String sessionId, SessionDescription sdp) throws ParseException;
+
+	public MsrpSession connect(String sessionId) throws ParseException;
+
+	public MsrpSession connect(String sessionId, String to, String username, String password);
+}]]>
+    </programlisting>
+
+    <variablelist>
+    	<varlistentry>
+			<term>The <literal>getMsrpSession(sessionId)</literal> method:</term>
+			<listitem>
+				<para>Retrieves the existing MSRP session with the specified id.</para>
+			</listitem>
+		</varlistentry>
+	</variablelist>
+    <variablelist>
+    	<varlistentry>
+			<term>The <literal>connect(sessionId, sdp)</literal> method:</term>
+			<listitem>
+				<para>Create a passive (server) MSRP session (activity) that waits for a connection from the supplied <literal>sdp</literal>-descriptor. The parameters are typically the result of negotiation using a 'rendez-vous' protocol like SIP that are passed on to actually establish the session.</para>
+			</listitem>
+		</varlistentry>
+	</variablelist>
+    <variablelist>
+    	<varlistentry>
+			<term>The <literal>connect(sessionId)</literal> method:</term>
+			<listitem>
+				<para>Create an active (client) MSRP session (activity) that will connect to the server being specified by a subsequent call to <literal>MsrpSession.setRemoteSdp(sdp)</literal>.</para>
+			</listitem>
+		</varlistentry>
+	</variablelist>
+    <variablelist>
+    	<varlistentry>
+			<term>The <literal>connect(sessionId, to, username, password)</literal> method:</term>
+			<listitem>
+				<para>Not implemented yet. Create an active and secured MSRPS session.</para>
+			</listitem>
+		</varlistentry>
+	</variablelist>
+</section>

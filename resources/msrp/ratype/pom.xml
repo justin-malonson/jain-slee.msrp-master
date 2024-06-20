@@ -1,0 +1,34 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<artifactId>restcomm-slee-ra-msrp</artifactId>
+		<groupId>org.mobicents.resources</groupId>
+		<version>2.0.0</version>
+	</parent>
+
+	<artifactId>msrp-ratype</artifactId>
+	<name>Restcomm :: Resources :: ${project.artifactId}</name>
+
+	<dependencies>
+		<dependency>
+            <artifactId>jain-slee</artifactId>
+			<groupId>javax.slee</groupId>
+		</dependency>
+		<dependency>
+            <artifactId>msrp-events</artifactId>
+			<groupId>${project.groupId}</groupId>
+			<version>${project.version}</version>
+		</dependency>
+        <dependency>
+            <artifactId>msrp-library</artifactId>
+            <groupId>${project.groupId}</groupId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <artifactId>jain-sip-ri</artifactId>
+            <groupId>javax.sip</groupId>
+            <version>${jain-sip-ri.version}</version>
+        </dependency>
+	</dependencies>
+</project>

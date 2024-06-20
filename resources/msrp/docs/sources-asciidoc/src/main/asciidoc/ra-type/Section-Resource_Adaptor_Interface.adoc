@@ -1,0 +1,48 @@
+[[_ratype_ra_interface]]
+= Resource Adaptor Interface
+(((Sbb interface)))
+
+
+The {this-ra}
+Resource Adaptor interface of type ``org.mobicents.slee.resource.msrp.MsrpResourceAdaptorSbbInterface``, that an Sbb can use to create msrp sessions (activities), is defined as follows:
+
+[source,java]
+----
+
+		
+package org.mobicents.slee.resource.msrp;
+
+import javax.net.msrp.exceptions.ParseException;
+import javax.sdp.SessionDescription;
+
+public interface MsrpResourceAdaptorSbbInterface {
+
+	public MsrpSession getMsrpSession(String sessionId);
+
+	public MsrpSession connect(String sessionId, SessionDescription sdp) throws ParseException;
+
+	public MsrpSession connect(String sessionId) throws ParseException;
+
+	public MsrpSession connect(String sessionId, String to, String username, String password);
+}
+----
+
+The `getMsrpSession(sessionId)` method:::
+Retrieves the existing MSRP session with the specified id.
+
+The `connect(sessionId, sdp)` method:::
+Create a passive (server) MSRP session (activity) that waits for a connection from the supplied ``sdp``-descriptor.
+The parameters are typically the result of negotiation using a 'rendez-vous' protocol like SIP that are passed on to actually establish the session.
+
+The `connect(sessionId)` method:::
+Create an active (client) MSRP session (activity) that will connect to the server being specified by a subsequent call to ``MsrpSession.setRemoteSdp(sdp)``.
+
+The `connect(sessionId, to, username, password)` method:::
+Not implemented yet.
+Create an active and secured MSRPS session.
+
+ifdef::backend-docbook[]
+[index]
+== Index
+// Generated automatically by the DocBook toolchain.
+endif::backend-docbook[]

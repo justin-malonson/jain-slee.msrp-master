@@ -1,0 +1,20 @@
+
+:leveloffset: +1
+
+include::Book_Info.adoc[]
+
+include::common/Preface.adoc[]
+
+include::Chapter-Introduction.adoc[]
+
+include::ra-type/Chapter-Resource_Adaptor_Type.adoc[]
+
+include::ra/Chapter-Resource_Adaptor.adoc[]
+
+include::Chapter-Setup.adoc[]
+
+include::Chapter-Clustering.adoc[]
+
+include::Revision_History.adoc[]
+
+:leveloffset: -1

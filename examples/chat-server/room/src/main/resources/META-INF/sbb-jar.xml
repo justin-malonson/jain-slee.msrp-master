@@ -1,0 +1,160 @@
+<?xml version="1.0"?>
+<!DOCTYPE sbb-jar PUBLIC "-//Sun Microsystems, Inc.//DTD JAIN SLEE SBB 1.1//EN"
+                         "http://java.sun.com/dtd/slee-sbb-jar_1_1.dtd">
+<sbb-jar>
+    <sbb>
+        <sbb-name>MixerSbb</sbb-name>
+        <sbb-vendor>org.mobicents.examples</sbb-vendor>
+        <sbb-version>1.0</sbb-version>
+
+        <library-ref>
+            <library-name>msrp-chatroom-library</library-name>
+            <library-vendor>org.mobicents.examples</library-vendor>
+            <library-version>1.0</library-version>
+        </library-ref>
+
+        <sbb-classes>
+             <sbb-abstract-class reentrant="True">
+                <sbb-abstract-class-name>org.mobicents.slee.example.msrp.room.MixerSbb</sbb-abstract-class-name>
+
+                <cmp-field><cmp-field-name>controller</cmp-field-name></cmp-field>
+                <cmp-field><cmp-field-name>myContext</cmp-field-name></cmp-field>
+                <cmp-field><cmp-field-name>roomId</cmp-field-name></cmp-field>
+                <cmp-field><cmp-field-name>roomContext</cmp-field-name></cmp-field>
+                <cmp-field><cmp-field-name>connectionId</cmp-field-name></cmp-field>
+                <cmp-field><cmp-field-name>localSdp </cmp-field-name></cmp-field>
+                <cmp-field><cmp-field-name>remoteSdp</cmp-field-name></cmp-field>
+                <cmp-field><cmp-field-name>state</cmp-field-name></cmp-field>
+                <cmp-field><cmp-field-name>member</cmp-field-name></cmp-field>
+                <cmp-field><cmp-field-name>nickname</cmp-field-name></cmp-field>
+                <cmp-field><cmp-field-name>composeState</cmp-field-name></cmp-field>
+                <cmp-field><cmp-field-name>timerId</cmp-field-name></cmp-field>
+                <cmp-field><cmp-field-name>keepAliveId</cmp-field-name></cmp-field>
+                <cmp-field><cmp-field-name>isAliveSent</cmp-field-name></cmp-field>
+                <cmp-field><cmp-field-name>recordings</cmp-field-name></cmp-field>
+            </sbb-abstract-class>
+            <sbb-local-interface>
+                <sbb-local-interface-name>org.mobicents.slee.example.msrp.MixerControlLocalObject</sbb-local-interface-name>
+            </sbb-local-interface>
+            <sbb-activity-context-interface>
+                <sbb-activity-context-interface-name>org.mobicents.slee.example.msrp.room.MsrpContext</sbb-activity-context-interface-name>
+            </sbb-activity-context-interface>    
+        </sbb-classes>
+
+        <!-- SLEE & internal events -->
+        <event event-direction="Receive" initial-event="False">
+            <event-name>Timer</event-name>
+            <event-type-ref>
+                <event-type-name>javax.slee.facilities.TimerEvent</event-type-name>
+                <event-type-vendor>javax.slee</event-type-vendor>
+                <event-type-version>1.0</event-type-version>
+            </event-type-ref>
+        </event>
+
+        <!-- MSRP -->
+        <event event-direction="Receive" initial-event="False">
+            <event-name>MessageIn</event-name>
+            <event-type-ref>
+                <event-type-name>net.java.slee.resource.msrp.IncomingMessage</event-type-name>
+                <event-type-vendor>net.java.slee</event-type-vendor>
+                <event-type-version>1.0</event-type-version>
+            </event-type-ref>
+        </event>
+        <event event-direction="FireAndReceive" initial-event="False">
+            <event-name>StatusUpdate</event-name>
+            <event-type-ref>
+                <event-type-name>net.java.slee.resource.msrp.IncomingStatusMessage</event-type-name>
+                <event-type-vendor>net.java.slee</event-type-vendor>
+                <event-type-version>1.0</event-type-version>
+            </event-type-ref>
+        </event>
+        <!-- Ignore for now (event fired but not picked up) -->
+        <!--event event-direction="Receive" initial-event="False">
+            <event-name>KeepAlive</event-name>
+            <event-type-ref>
+                <event-type-name>net.java.slee.resource.msrp.IncomingAliveMessage</event-type-name>
+                <event-type-vendor>net.java.slee</event-type-vendor>
+                <event-type-version>1.0</event-type-version>
+            </event-type-ref>
+        </event-->
+        <event event-direction="Receive" initial-event="False">
+            <event-name>ReportReceived</event-name>
+            <event-type-ref>
+                <event-type-name>net.java.slee.resource.msrp.ReportEvent</event-type-name>
+                <event-type-vendor>net.java.slee</event-type-vendor>
+                <event-type-version>1.0</event-type-version>
+            </event-type-ref>
+        </event>
+        <event event-direction="Receive" initial-event="False">
+            <event-name>ConnectionLost</event-name>
+            <event-type-ref>
+                <event-type-name>net.java.slee.resource.msrp.ConnectionLostEvent</event-type-name>
+                <event-type-vendor>net.java.slee</event-type-vendor>
+                <event-type-version>1.0</event-type-version>
+            </event-type-ref>
+        </event>
+        <event event-direction="Receive" initial-event="False">
+            <event-name>Nickname</event-name>
+            <event-type-ref>
+                <event-type-name>net.java.slee.resource.msrp.NicknameEvent</event-type-name>
+                <event-type-vendor>net.java.slee</event-type-vendor>
+                <event-type-version>1.0</event-type-version>
+            </event-type-ref>
+        </event>
+
+        <!-- control command sequencing -->
+        <event event-direction="FireAndReceive" initial-event="False">
+            <event-name>CreateMixer</event-name>
+            <event-type-ref>
+                <event-type-name>org.mobicents.msrp.events.createMixer</event-type-name>
+                <event-type-vendor>org.mobicents.examples</event-type-vendor>
+                <event-type-version>1.0</event-type-version>
+            </event-type-ref>
+        </event>
+        <event event-direction="FireAndReceive" initial-event="False">
+            <event-name>CreateMedia</event-name>
+            <event-type-ref>
+                <event-type-name>org.mobicents.msrp.events.createMedia</event-type-name>
+                <event-type-vendor>org.mobicents.examples</event-type-vendor>
+                <event-type-version>1.0</event-type-version>
+            </event-type-ref>
+        </event>
+
+        <!-- Internal sequencing -->
+        <event event-direction="FireAndReceive" initial-event="False">
+            <event-name>Chat</event-name>
+            <event-type-ref>
+                <event-type-name>org.mobicents.msrp.events.chat</event-type-name>
+                <event-type-vendor>org.mobicents.examples</event-type-vendor>
+                <event-type-version>1.0</event-type-version>
+            </event-type-ref>
+        </event>
+        <event event-direction="FireAndReceive" initial-event="False">
+            <event-name>UpdateParticipant</event-name>
+            <event-type-ref>
+                <event-type-name>org.mobicents.msrp.events.updateParticipant</event-type-name>
+                <event-type-vendor>org.mobicents.examples</event-type-vendor>
+                <event-type-version>1.0</event-type-version>
+            </event-type-ref>
+        </event>
+
+        <env-entry>
+            <env-entry-name>KeepAliveTick</env-entry-name>
+            <env-entry-type>java.lang.Integer</env-entry-type>
+            <env-entry-value>1800</env-entry-value>
+        </env-entry>
+
+        <resource-adaptor-type-binding>
+            <resource-adaptor-type-ref>
+                <resource-adaptor-type-name>MsrpResourceAdaptorType</resource-adaptor-type-name>
+                <resource-adaptor-type-vendor>org.mobicents</resource-adaptor-type-vendor>
+                <resource-adaptor-type-version>1.0</resource-adaptor-type-version>
+            </resource-adaptor-type-ref>
+            <activity-context-interface-factory-name>slee/resources/msrp/1.0/acifactory</activity-context-interface-factory-name>
+            <resource-adaptor-entity-binding>
+                <resource-adaptor-object-name>slee/resources/msrp/1.0/sbbinterface</resource-adaptor-object-name>
+                <resource-adaptor-entity-link>MsrpRA</resource-adaptor-entity-link>
+            </resource-adaptor-entity-binding>
+        </resource-adaptor-type-binding>
+    </sbb>
+</sbb-jar>

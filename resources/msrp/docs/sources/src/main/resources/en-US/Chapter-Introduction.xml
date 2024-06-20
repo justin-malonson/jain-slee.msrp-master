@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [<!ENTITY % BOOK_ENTITIES SYSTEM "User_Guide.ent">%BOOK_ENTITIES;]>
+
+<chapter id="introduction">
+
+	<title>Introduction to &THIS.PLATFORM; JAIN SLEE &THIS.RA; Resource Adaptor</title>
+
+	<para>This resource adaptor enables an application - developed using a Service Building Block hosted in a SLEE container - to send or receive data using the
+    <indexterm><primary>MSRP</primary></indexterm>
+    MSRP protocol (RFC 4975). For establishing sessions, one needs the assistance of a 'rendez-vous' protocol which -in this case- is
+    <indexterm><primary>SIP</primary></indexterm>
+    SIP. Thus, this RA has a direct dependency on the SIP resource adaptor and cannot be used without it.</para>
+    <para>The adaptor effectively wraps the Java MSRP peer library so it can be ued in a SLEE environment.</para>
+    <para>Currently,
+    <indexterm><primary>nickname</primary></indexterm>
+    nicknames are supported (draft-ietf-simple-chat), as well as message composition indication (RFC 3994).</para>
+    <para>Secure sessions (msrps) are currently not supported, nor are Relay Extensions (RFC 4976)</para>
+    <para>The activities are the created MSRP sessions that applications can use to send messages, nicknames, responses and receive events related to incoming MSRP traffic.</para>
+    <para>Events represent incoming MSRP messages, reports and session status changes</para>
+
+</chapter>

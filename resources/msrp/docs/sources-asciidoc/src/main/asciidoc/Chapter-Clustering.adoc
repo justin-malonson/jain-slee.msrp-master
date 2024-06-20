@@ -1,0 +1,5 @@
+[[_ra_clustering]]
+= Clustering
+
+The {this-ra}
+Resource Adaptor is not cluster aware, which means there is no failover process for a cluster node's requests being handled once the node fails.

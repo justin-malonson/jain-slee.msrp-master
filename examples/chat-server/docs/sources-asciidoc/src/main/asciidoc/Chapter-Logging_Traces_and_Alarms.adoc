@@ -1,0 +1,27 @@
+[[_logging_traces_and_alarms]]
+= Traces and Alarms
+
+[[_tracers]]
+== Tracers
+
+[IMPORTANT]
+====
+Spaces where introduced in log4j category name to properly render page.
+Please remove them when using copy/paste.
+====
+
+
+The example Application uses JAIN SLEE 1.1 Tracers, named
+* `GenericChatSbb`
+* `FocusSbb`
+* `DialogSbb`
+* `DialogInSbb`
+* `MixerSbb`
+
+The related log4j category is  `javax.slee.SbbNotification[service=ServiceID[name="FocusService",vendor=org.mobicents,version=1.0],sbb=SbbID[name=FocusService,vendor=org.mobicents,version=1.0]]`. 
+
+[[_alarms]]
+== Alarms
+
+
+The example Application does not use JAIN SLEE Alarms.

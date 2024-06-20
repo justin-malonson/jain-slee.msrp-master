@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "../User_Guide.ent">
+%BOOK_ENTITIES;
+]>
+
+<section id="ratype_activities">
+
+	<title>Activities</title>
+
+    <indexterm><primary>activity object</primary></indexterm>
+	<para>The Resource Adaptor Type defines one activity object, <literal>org.mobicents.slee.resource.msrp.MsrpSession</literal>.</para>
+
+    <indexterm><primary>session</primary></indexterm>
+	<para>The <literal>MsrpSession</literal> represents an MSRP session. It is created by calling any of the <literal>connect()</literal> methods within the <literal>MsrpResourceAdaptorSbbInterface</literal> and ends when an <literal>MsrpSession.disconnect()</literal> is called or a connection is lost. The activity object interface is defined as follows:</para>
+
+	<programlisting language="Java" role="JAVA">
+		<![CDATA[
+package org.mobicents.slee.resource.msrp;
+
+public interface MsrpSession extends Serializable {
+
+	public SessionDescription getLocalSdp();
+	public void setRemoteSdp(SessionDescription sdp) throws SdpException,
+                             URISyntaxException, IOException;
+
+	public void sendMessage(CharSequence message);
+	public void sendMessage(byte[] message);
+	public void sendMessage(String contentType, byte[] message);
+	public void sendWrappedMessage(String wrapType, String from, String to, CharSequence message);
+	public void sendNickResult(Transaction reqResp, int reponse, String comment)
+										throws IllegalUseException;
+	public void disconnect();
+	public String getSessionId();
+	public Object getSession();
+}]]>
+     </programlisting>
+
+     <variablelist>
+     	<varlistentry>
+			<term>The <literal>getLocalSdp()</literal> method:</term>
+			<listitem>
+				<para>Retrieves the session description of the local endpoint.</para>
+			</listitem>
+		</varlistentry>
+     	<varlistentry>
+			<term>The <literal>setRemoteSdp(sdp)</literal> method:</term>
+			<listitem>
+				<para>Sets the  session description of the remote endpoint.</para>
+			</listitem>
+		</varlistentry>
+     	<varlistentry>
+			<term>The <literal>sendMessage(...)</literal> methods:</term>
+			<listitem>
+				<para>send MSRP messages with the given payloads.</para>
+			</listitem>
+		</varlistentry>
+     	<varlistentry>
+			<term>The <literal>sendWrappedMessage(wrapType, from, to, message)</literal> method:</term>
+			<listitem>
+				<para>Send a wrapped MSRP message with the given payload. Only <literal>message/cpim</literal> wrapping of <literal>text/plain</literal> is currently supported.</para>
+			</listitem>
+		</varlistentry>
+     	<varlistentry>
+			<term>The <literal>sendNickResult(reqResp, response, comment)</literal> method:</term>
+			<listitem>
+				<para>Send the given result to a <literal>NICKNAME</literal> request.</para>
+			</listitem>
+		</varlistentry>
+		<varlistentry>
+			<term>The <literal>disconnect()</literal> method:</term>
+			<listitem>
+				<para>Disconnect the MSRP session (also ends the activity).</para>
+			</listitem>
+		</varlistentry>
+		<varlistentry>
+			<term>The <literal>getSessionId()</literal> method:</term>
+			<listitem>
+				<para>Retrieve the unique identification of this session.</para>
+			</listitem>
+		</varlistentry>
+		<varlistentry>
+			<term>The <literal>getSession()</literal> method:</term>
+			<listitem>
+				<para>Retrieves the actual MSRP session object of the underlying library.</para>
+			</listitem>
+		</varlistentry>
+	</variablelist>
+
+</section>

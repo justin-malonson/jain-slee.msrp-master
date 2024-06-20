@@ -1,0 +1,13 @@
+[[_ra]]
+= Resource Adaptor Implementation
+
+This chapter documents the {this-ra}
+Resource Adaptor Implementation details, such as the configuration properties, the default Resource Adaptor entities, and the JAIN SLEE 1.1 Tracers and Alarms used.
+
+The name of the RA is ``MsrpResourceAdaptor``, its vendor is `org.mobicents` and its version is ``1.0``.
+
+include::Section-Configuration.adoc[]
+
+include::Section-Default_Resource_Adaptor_Entities.adoc[]
+
+include::Section-Logging_Traces_and_Alarms.adoc[]

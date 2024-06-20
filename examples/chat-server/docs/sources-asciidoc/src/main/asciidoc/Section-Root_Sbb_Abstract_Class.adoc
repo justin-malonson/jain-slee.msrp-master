@@ -1,0 +1,147 @@
+[[_root_sbb_abstract_class]]
+= The Root SBB Abstract Class
+
+
+The class `org.mobicents.slee.example.msrp.FocusSbb` includes the service logic for the example.
+
+[[_root_sbb_abstract_class_setsbbcontext]]
+== The setSbbContext(SbbContext) method
+
+
+The ``javax.slee.SbbObject``'s `setSbbContext(SbbContext)` is used by SBBs to store the SBB's context into a class field.
+The SBB should take the opportunity to also store objects, such as SLEE facilities, which are reused by all service logic entities, a.k.a.
+SbbEntities, and are stored in the JNDI environment.
+
+The class fields and `setSbbContext(SbbContext)` method's and related code:
+
+[source,java]
+----
+
+	public void setSbbContext(SbbContext context) {
+		super.setSbbContext(context);
+		trc = context.getTracer("GenericChatSbb");
+
+		try {
+	        sipAcif = (SipActivityContextInterfaceFactory)
+		        	nameContext.lookup(getSipRaAcifName());
+			sipProvider = (SleeSipProvider) nameContext.lookup(getSipRaProviderName());
+
+			messageFactory = sipProvider.getMessageFactory();
+	        addressFactory = sipProvider.getAddressFactory();
+	        headerFactory  = sipProvider.getHeaderFactory();
+		} catch (NamingException e) {
+			trc.severe(e.getMessage());
+		}
+	}
+----
+
+[[_root_sbb_abstract_class_invite_event_handler]]
+== The SIP INVITE Event Handler Method
+
+
+The SIP INVITE is the starting point of each instance of the service logic, its responsibility is:
+
+* To determine whether a new room should be created (using the from username
+and`JNDI`) and depending on that:
+** if not found - create one (using the `MixerSbb` child) and attach an activity
+ to it
+** if found, re-fire the event on the `FocusSbb` that initially created the chat room
+*** if found and re-fired, create a `DialogSbb` child that can take over the SIP
+dialog and set-up an MSRP connection.
+
+Note that the initial event defines an initial event selector `filterForNewChatRequests`
+that distinguishes between a truly initial invite for a new chatroom and a re-fired
+one to join an existing room.
+
+The event handler code:
+
+[source,java]
+----
+
+	public void onInvite(RequestEvent event, ActivityContextInterface aci) {
+		if (aci.getActivity() instanceof NullActivity) {	// re-fired?
+			/*
+			 * New invite to an existing chat room. Try adding the new participant.
+			 */
+			addMember(event.getServerTransaction());
+		} else {
+			/*
+			 * initial invite, search for existing room.
+			 * This'd be the ideal place to implement some other room-management
+			 * mechanism. Here, the To-header user part is used as room name.
+			 * Pick any alternative if you want. 
+			 */
+			javax.sip.address.Address to =
+					((ToHeader) event.getRequest().getHeader(ToHeader.NAME)).getAddress();
+			String roomName = ((SipURI) to.getURI()).getUser();
+			if (roomName == null || roomName.length() < 1) {
+				createFailed("no or invalid room name specified");
+				return;
+			}
+			ActivityContextInterface existingFocus =
+					acNamingFacility.lookup(FPREFIX + roomName);
+			if (existingFocus != null) {
+				/*
+				 * There is a chat room already, re-fire invite on existing focus.
+				 */
+				fireInvite(event, existingFocus, null);
+				detachServerTransaction();
+				return;
+			} else {
+				/*
+				 * New invite for a new chat room, create the room and
+				 * link this chatter to it.
+				 */
+				FocusContext focus = asSbbActivityContextInterface(createNullAci());
+				try {
+					acNamingFacility.bind(focus, FPREFIX + roomName);
+					focus.setFocusName(roomName);
+					setFocusName(roomName);
+				} catch (Exception e) {
+					createFailed(e.getMessage());
+					return;
+				}
+				try {					// create chat room focal-point
+					MixerControlLocalObject room = (MixerControlLocalObject)
+												getMixerRelation().create();
+					room.setControlAgent(getMyIf());
+					room.createMixer(roomName);
+				} catch (Exception e) {
+					try {
+						acNamingFacility.unbind(FPREFIX + roomName);
+					} catch (Exception e1) { ; }
+					createFailed(e.getMessage());
+				}
+			}
+		}
+	}
+----
+
+The initial event selector code:
+
+[source,java]
+----
+	public InitialEventSelector filterForNewChatRequests(InitialEventSelector ies) {
+		Object event = ies.getEvent();
+
+		if (event instanceof RequestEvent) {
+			if (((RequestEvent) event).getDialog() != null)
+			{
+				ies.setInitialEvent(false); // This a re-INVITE, not initial.
+			}
+			else if (!isChatOffer(((RequestEvent) event).getRequest()))
+			{
+				ies.setInitialEvent(false);	// Not a chat, leave it
+			}
+			else if (ies.getActivity() instanceof NullActivity)
+			{
+				ies.setInitialEvent(false);	// Re-fired on existing focus.
+			}
+			else
+			{
+				ies.setActivityContextSelected(true);
+			}
+		}
+		return ies;
+	}
+----

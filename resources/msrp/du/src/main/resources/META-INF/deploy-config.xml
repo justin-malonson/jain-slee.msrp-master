@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deploy-config>
+  <ra-entity
+    resource-adaptor-id="ResourceAdaptorID[name=MsrpResourceAdaptor,vendor=org.mobicents,version=1.0]"
+    entity-name="MsrpRA">
+    <properties>
+   		<property  name="slee.resource.msrp.ipaddress" type="java.lang.String"
+   		           value="127.0.0.1" />
+    </properties>
+    <ra-link name="MsrpRA" />
+  </ra-entity>
+</deploy-config>

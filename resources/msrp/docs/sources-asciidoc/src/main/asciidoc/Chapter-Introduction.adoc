@@ -1,0 +1,34 @@
+[[_introduction]]
+= Introduction to {this-platform} JAIN SLEE {this-ra} Resource Adaptor
+:doctype: book
+:sectnums:
+:toc: left
+:icons: font
+:experimental:
+:sourcedir: .
+
+
+This resource adaptor enables an application - developed using a Service Building Block hosted in a SLEE container - to send or receive data using the 
+(((MSRP)))
+ MSRP protocol (RFC 4975). For establishing sessions, one needs the assistance of a 'rendez-vous' protocol which -in this case- is 
+(((SIP)))
+ SIP.
+Thus, this RA has a direct dependency on the SIP resource adaptor and cannot be used without it.
+
+The adaptor effectively wraps the Java MSRP peer library so it can be ued in a SLEE environment.
+
+Currently, 
+(((nickname)))
+ nicknames are supported (draft-ietf-simple-chat), as well as message composition indication (RFC 3994).
+
+Secure sessions (msrps) are currently not supported, nor are Relay Extensions (RFC 4976)
+
+The activities are the created MSRP sessions that applications can use to send messages, nicknames, responses and receive events related to incoming MSRP traffic.
+
+Events represent incoming MSRP messages, reports and session status changes
+
+ifdef::backend-docbook[]
+[index]
+== Index
+// Generated automatically by the DocBook toolchain.
+endif::backend-docbook[]

@@ -1,0 +1,78 @@
+[[_ratype_events]]
+= Events
+(((event)))
+
+
+The Events fired by {this-ra}
+Resource Adaptor represent incoming MSRP traffic or session state changes.
+The table below lists the Resource Adaptor Type event types.
+
+.Events fired on the TransferActivity:
+[cols="1,1,1,1,1", frame="all", options="header"]
+|===
+| Name
+| Vendor
+| Version
+| Event Class
+| Description
+
+|net.java.slee. resource.msrp. IncomingMessage
+|net.java.slee
+|1.0
+|javax.net.msrp. IncomingMessage
+|An incoming MSRP message.
+
+|net.java.slee. resource.msrp. IncomingStatusMessage
+|net.java.slee
+|1.0
+|javax.net.msrp. IncomingStatusMessage
+|An incoming `application/im-iscomposing+xml` message was received (status update).
+
+|net.java.slee. resource.msrp. IncomingAliveMessage
+|net.java.slee
+|1.0
+|javax.net.msrp. IncomingAliveMessage
+|An bodiless message was received.
+
+|net.java.slee. resource.msrp. ReportEvent
+|net.java. slee
+|1.0
+|javax.net.msrp. ReportEvent
+|An MSRP REPORT was received.
+
+|net.java.slee. resource.msrp. ConnectionLostEvent
+|net.java.slee
+|1.0
+|javax.net.msrp. ConnectionLostEvent
+|Session connection was lost.
+
+|net.java.slee. resource.msrp. MessageAbortedEvent
+|net.java.slee
+|1.0
+|javax.net.msrp. events. MessageAbortedEvent
+|A message transmission was aborted.
+
+|net.java.slee. resource.msrp. NicknameEvent
+|net.java.slee
+|1.0
+|javax.net.msrp. NicknameEvent
+|An MSRP NICKNAME operation was received.
+
+|net.java.slee. resource.msrp. UpdateSendEvent
+|net.java.slee
+|1.0
+|javax.net.msrp. UpdateSendEvent
+|A message being send has an update on how much was sent already.
+|===
+
+[IMPORTANT]
+====
+Spaces where introduced in `Name` and `Event Class` column values, to correctly render the table.
+Please remove them when using copy/paste.
+====
+
+ifdef::backend-docbook[]
+[index]
+== Index
+// Generated automatically by the DocBook toolchain.
+endif::backend-docbook[]

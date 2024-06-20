@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE event-jar PUBLIC "-//Sun Microsystems, Inc.//DTD JAIN SLEE Event 1.1//EN" "http://java.sun.com/dtd/slee-event-jar_1_1.dtd">
+<event-jar>	
+
+    <library-ref>
+        <library-name>msrp-library</library-name>
+        <library-vendor>org.mobicents</library-vendor>
+        <library-version>1.0</library-version>
+    </library-ref> 
+
+	<!-- Request events -->
+	<event-definition>
+        <description>An MSRP SEND message was received</description>
+		<event-type-name>net.java.slee.resource.msrp.IncomingMessage</event-type-name>
+		<event-type-vendor>net.java.slee</event-type-vendor>
+		<event-type-version>1.0</event-type-version>
+		<event-class-name>javax.net.msrp.IncomingMessage</event-class-name>
+	</event-definition>
+
+    <event-definition>
+        <description>An 'application/im-iscomposing+xml' message was received.</description>
+        <event-type-name>net.java.slee.resource.msrp.IncomingStatusMessage</event-type-name>
+        <event-type-vendor>net.java.slee</event-type-vendor>
+        <event-type-version>1.0</event-type-version>
+        <event-class-name>javax.net.msrp.IncomingStatusMessage</event-class-name>
+    </event-definition>
+
+    <event-definition>
+        <description>A bodiless SEND was received.</description>
+        <event-type-name>net.java.slee.resource.msrp.IncomingAliveMessage</event-type-name>
+        <event-type-vendor>net.java.slee</event-type-vendor>
+        <event-type-version>1.0</event-type-version>
+        <event-class-name>javax.net.msrp.IncomingAliveMessage</event-class-name>
+    </event-definition>
+
+    <event-definition>
+        <description>An MSRP REPORT was received.</description>
+        <event-type-name>net.java.slee.resource.msrp.ReportEvent</event-type-name>
+        <event-type-vendor>net.java.slee</event-type-vendor>
+        <event-type-version>1.0</event-type-version>
+        <event-class-name>javax.net.msrp.ReportEvent</event-class-name>
+    </event-definition>
+
+    <event-definition>
+        <description>Connection was lost.</description>
+        <event-type-name>net.java.slee.resource.msrp.ConnectionLostEvent</event-type-name>
+        <event-type-vendor>net.java.slee</event-type-vendor>
+        <event-type-version>1.0</event-type-version>
+        <event-class-name>javax.net.msrp.ConnectionLostEvent</event-class-name>
+    </event-definition>
+
+    <event-definition>
+        <description>A message transmission was aborted.</description>
+        <event-type-name>net.java.slee.resource.msrp.MessageAbortedEvent</event-type-name>
+        <event-type-vendor>net.java.slee</event-type-vendor>
+        <event-type-version>1.0</event-type-version>
+        <event-class-name>javax.net.msrp.events.MessageAbortedEvent</event-class-name>
+    </event-definition>
+
+    <event-definition>
+        <description>An MSRP NICKNAME operation was received.</description>
+        <event-type-name>net.java.slee.resource.msrp.NicknameEvent</event-type-name>
+        <event-type-vendor>net.java.slee</event-type-vendor>
+        <event-type-version>1.0</event-type-version>
+        <event-class-name>javax.net.msrp.NicknameEvent</event-class-name>
+    </event-definition>
+
+    <event-definition>
+        <description>A message being send has an update on how much was sent already.</description>
+        <event-type-name>net.java.slee.resource.msrp.UpdateSendEvent</event-type-name>
+        <event-type-vendor>net.java.slee</event-type-vendor>
+        <event-type-version>1.0</event-type-version>
+        <event-class-name>javax.net.msrp.UpdateSendEvent</event-class-name>
+    </event-definition>
+</event-jar>

@@ -1,0 +1,105 @@
+<?xml version="1.0" ?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<packaging>pom</packaging>
+
+	<parent>
+        <groupId>org.mobicents.servers.jainslee.msrp</groupId>
+        <artifactId>restcomm-slee-msrp</artifactId>
+        <version>7.0.0</version>
+        <relativePath>../..</relativePath>
+	</parent>
+
+	<artifactId>msrp-chatroom</artifactId>
+	<groupId>org.mobicents.examples</groupId>
+    <version>2.0.0</version>
+
+	<name>Restcomm :: Sbb :: ${project.artifactId}</name>
+
+	<modules>
+        <module>common</module>
+        <module>library</module>
+        <module>events</module>
+        <module>room</module>
+		<module>sbb</module>
+        <module>du</module>
+	</modules>
+
+	<properties>
+		<mobicents.resource.sip11.version>7.0.13</mobicents.resource.sip11.version>
+	</properties>
+
+	<profiles>
+		<profile>
+			<id>release</id>
+			<modules>
+				<module>docs</module>
+				<module>release</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>maven-release</id>
+			<modules>
+				<module>docs</module>
+				<module>release</module>
+			</modules>
+			<build>
+				<plugins>
+					<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>2.0</version>
+					<configuration>
+						<autoVersionSubmodules>true</autoVersionSubmodules>
+						<preparationGoals>clean install</preparationGoals>
+					</configuration>
+					</plugin>
+				</plugins>
+			</build>		
+		</profile>
+	</profiles>	
+
+	<scm>
+		<connection>scm:git:https://github.com/RestComm/jain-slee.msrp.git</connection>
+		<developerConnection>scm:git:git@github.com:RestComm/jain-slee.msrp.git</developerConnection>
+		<url>https://github.com/RestComm/jain-slee.msrp</url>
+	</scm>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-eclipse-plugin</artifactId>
+   				<groupId>org.mobicents.tools</groupId>
+				<inherited>false</inherited>
+				<executions />
+				<configuration>
+					<excludePoms />
+					<classpathExcludes>
+						<exclude>xml-apis:xml-apis</exclude>
+						<exclude>jtidy:jtidy</exclude>
+					</classpathExcludes>
+					<resolveTransitiveDependencies>true</resolveTransitiveDependencies>
+					<eclipseProjectName>mobicents-slee-example-msrp-chatroom</eclipseProjectName>
+				</configuration>
+			</plugin>
+		</plugins>		
+	</build>
+
+	<!-- dupe info from parent, but it's only way to retrieve the parent without checkout -->
+	<repositories>
+		<repository>
+			<id>restcomm-public-repository-group</id>
+			<name>Restcomm Public Maven Repository Group</name>
+			<url>https://oss.sonatype.org/content/groups/public</url>
+			<layout>default</layout>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</snapshots>
+		</repository>
+	</repositories>
+
+</project>

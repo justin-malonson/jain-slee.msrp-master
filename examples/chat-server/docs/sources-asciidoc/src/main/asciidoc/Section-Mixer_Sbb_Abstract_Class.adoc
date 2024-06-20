@@ -1,0 +1,122 @@
+[[_mixer_sbb_abstract_class]]
+= The Mixer SBB Abstract Class
+
+
+The class `org.mobicents.slee.example.msrp.room.MixerSbb` is responsible for the
+(MSRP-) media handling. +
+It is either created as a chat room or as a connection handler.
+
+[[_mixer_sbb_abstract_class_setsbbcontext]]
+== The setSbbContext(SbbContext) method
+
+
+The ``javax.slee.SbbObject``'s `setSbbContext(SbbContext)` is used to connect to
+the MSRP resource adaptor.
+
+The class fields and `setSbbContext(SbbContext)` method's and related code:
+
+[source,java]
+----
+
+    public void setSbbContext(SbbContext context) {
+		super.setSbbContext(context);
+		this.trc = context.getTracer("MixerSbb");
+		try {
+			msrpAcif = (MsrpActivityContextInterfaceFactory)
+						nameContext.lookup("slee/resources/msrp/1.0/acifactory");
+			msrpIf = (MsrpResourceAdaptorSbbInterface)
+					nameContext.lookup("slee/resources/msrp/1.0/sbbinterface");
+			KeepAliveTick = (Integer) nameContext.lookup("KeepAliveTick");
+		} catch (Throwable e) {
+			trc.severe(e.getMessage());
+		}
+	}
+----
+
+[[_mixer_sbb_abstract_class_create_methods]]
+== The mixer create methods
+
+After creating the mixer child sbb, a call to `createMixer()` or `createMedia()`
+determines whether it is a chat room or an MSRP connection handler.
+
+Both methods re-fire it as an internal event on the local state handling activity.
+
+`onCreateMixer()` creates and registers the new room identification with JNDI
+and signals the completion to its' parent (the `FocusSbb`) trough a `createComplete()`.
+
+The code:
+
+[source,java]
+----
+
+	public void onCreateMixer(ChatEvent event, ActivityContextInterface aci) {
+		MixerFeedbackLocalObject controlAgent = getController();
+		String roomId = (String) event.getroomId();
+		if (roomId == null)				// not given: generate my own.
+			roomId = UUID.randomUUID().toString();
+
+		roomId = MPREFIX + roomId;
+		// Create chat room context and bind to room-id.
+		MsrpContext msrpContext = asSbbActivityContextInterface(createNullAci());
+		try {
+			acNamingFacility.bind(msrpContext, roomId);
+		} catch (Throwable t) {
+			trc.severe("failed to create media session", t);
+			controlAgent.createFailed(t.getMessage());
+			return;
+		}
+		setRoomId(roomId);
+		setRoomContext(msrpContext);
+		msrpContext.setParticipants(new HashMap<String, Participant>());
+		setRecordings(new HashMap<String, File>());
+		setState(State.ACTIVE);
+		trc.fine(String.format("Chat room(%s) created.", roomId));
+
+		controlAgent.createComplete(null);
+	}
+----
+
+`onCreateMedia()` connects to the existing room and sets up an MSRP session with
+the resource adaptor using the supplied `sdp` from the `INVITE` requesst. +
+It signals completion to its' parent (the `DialogSbb`) through a `createComplete()`.
+
+The code:
+
+[source,java]
+----
+
+	public void onCreateMedia(ChatEvent event, ActivityContextInterface aci) {
+		Object roomId = event.getroomId();
+		String sdp = event.getSdp();
+		MixerFeedbackLocalObject controlAgent = getController();
+		MsrpSession ms = null;
+
+		setRoomId((String) roomId);
+		setRoomContext(asSbbActivityContextInterface(acNamingFacility.lookup((String) roomId)));
+		String connId = UUID.randomUUID().toString();	// generate a unique id
+		setConnectionId(connId);
+		setComposeState(ImState.idle);
+		try {
+			if (sdp != null) {
+				setRemoteSdp(sdp);
+				ms = msrpIf.connect(connId,
+						SdpFactory.getInstance().createSessionDescription(sdp));
+			} else
+				ms = msrpIf.connect(connId);
+			SessionDescription localSdp = ms.getLocalSdp();
+			indicateChatroom(localSdp);
+			setLocalSdp(localSdp.toString());
+			msrpAcif.getActivityContextInterface(ms).attach(getMyIf());
+			getRoomContext().attach(getMyIf());
+			setState(State.LINKED);
+			setIsAliveSent(false);
+			setKeepAliveId(setTimer(KeepAliveTick * 1000, aci));
+			trc.fine(from() + "connection created");
+			controlAgent.createComplete(getLocalSdp());
+		} catch (Exception e) {
+			String reason = "Could not create media stream";
+			trc.severe(reason, e);
+			controlAgent.createFailed(reason);
+		}
+	}
+----

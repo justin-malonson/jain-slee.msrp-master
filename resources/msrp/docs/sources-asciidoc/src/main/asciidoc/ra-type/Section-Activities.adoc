@@ -1,0 +1,67 @@
+[[_ratype_activities]]
+= Activities
+(((activity object)))
+
+
+The Resource Adaptor Type defines one activity object, ``org.mobicents.slee.resource.msrp.MsrpSession``.
+(((session)))
+
+
+The `MsrpSession` represents an MSRP session.
+It is created by calling any of the `connect()` methods within the `MsrpResourceAdaptorSbbInterface` and ends when an `MsrpSession.disconnect()` is called or a connection is lost.
+The activity object interface is defined as follows:
+
+[source,java]
+----
+
+		
+package org.mobicents.slee.resource.msrp;
+
+public interface MsrpSession extends Serializable {
+
+	public SessionDescription getLocalSdp();
+	public void setRemoteSdp(SessionDescription sdp) throws SdpException,
+                             URISyntaxException, IOException;
+
+	public void sendMessage(CharSequence message);
+	public void sendMessage(byte[] message);
+	public void sendMessage(String contentType, byte[] message);
+	public void sendWrappedMessage(String wrapType, String from, String to, CharSequence message);
+	public void sendNickResult(Transaction reqResp, int reponse, String comment)
+										throws IllegalUseException;
+	public void disconnect();
+	public String getSessionId();
+	public Object getSession();
+}
+----
+
+The `getLocalSdp()` method:::
+Retrieves the session description of the local endpoint.
+
+The `setRemoteSdp(sdp)` method:::
+Sets the  session description of the remote endpoint.
+
+The `sendMessage(...)` methods:::
+send MSRP messages with the given payloads.
+
+The `sendWrappedMessage(wrapType, from, to, message)` method:::
+Send a wrapped MSRP message with the given payload.
+Only `message/cpim` wrapping of `text/plain` is currently supported.
+
+The `sendNickResult(reqResp, response, comment)` method:::
+Send the given result to a `NICKNAME` request.
+
+The `disconnect()` method:::
+Disconnect the MSRP session (also ends the activity).
+
+The `getSessionId()` method:::
+Retrieve the unique identification of this session.
+
+The `getSession()` method:::
+Retrieves the actual MSRP session object of the underlying library.
+
+ifdef::backend-docbook[]
+[index]
+== Index
+// Generated automatically by the DocBook toolchain.
+endif::backend-docbook[]

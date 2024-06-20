@@ -1,0 +1,31 @@
+[[_ratype_aci_factory]]
+= Activity Context Interface Factory
+(((context)))
+
+
+The Resource Adaptor's Activity Context Interface Factory is of type ``org.mobicents.slee.resource.msrp.MsrpActivityContextInterfaceFactory``, it allows the SBB to retrieve the `ActivityContextInterface` related to an existing Resource Adaptor activity object.
+The interface is defined as follows:
+
+[source,java]
+----
+
+		
+package org.mobicents.slee.resource.msrp;
+
+import javax.slee.ActivityContextInterface;
+import javax.slee.FactoryException;
+import javax.slee.UnrecognizedActivityException;
+
+public interface MsrpActivityContextInterfaceFactory {
+
+	public ActivityContextInterface getActivityContextInterface(
+			MsrpSession activity) throws NullPointerException,
+			UnrecognizedActivityException, FactoryException;
+}
+----
+
+ifdef::backend-docbook[]
+[index]
+== Index
+// Generated automatically by the DocBook toolchain.
+endif::backend-docbook[]

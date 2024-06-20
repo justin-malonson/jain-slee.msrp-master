@@ -1,0 +1,30 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<packaging>pom</packaging>
+
+	<parent>
+		<artifactId>msrp-chatroom</artifactId>
+		<groupId>org.mobicents.examples</groupId>
+		<version>2.0.0</version>
+	</parent>
+
+	<artifactId>msrp-chatroom-docs</artifactId>
+
+	<modules>
+		<module>sources-asciidoc</module>
+		<!--module>sources-mobicents</module>
+		<module>jdocbook-mobicents</module-->
+	</modules>
+
+	<properties>
+		<docs.example.name>MSRP chat room</docs.example.name>
+		<docs.example.dirname>chat-server</docs.example.dirname>
+        <docs.this.application>MSRP</docs.this.application>
+        <docs.this.platform>Restcomm</docs.this.platform>
+       <docs.this.release.source.code.url>
+            https://github.com/Restcomm/jain-slee.msrp
+       </docs.this.release.source.code.url>
+		<docs.bookid>ChatServer</docs.bookid>
+	</properties>
+
+</project>

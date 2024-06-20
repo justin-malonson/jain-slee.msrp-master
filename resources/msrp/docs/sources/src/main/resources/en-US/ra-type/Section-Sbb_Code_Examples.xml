@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [<!ENTITY % BOOK_ENTITIES SYSTEM "../User_Guide.ent">%BOOK_ENTITIES;]>
+
+<section id="ratype_sbb_code_examples">
+
+	<title>Sbb Code Examples</title>
+
+    <indexterm><primary>example</primary></indexterm>
+	<para>The following code shows how to use the Resource Adaptor Type for common functionalities</para>
+
+	<section id="ratype_sbb_code_example">
+
+		<title>Sbb handling an MSRP session</title>
+
+		<para>The following Sbb handles an MSRP session whereby the session is established using <literal>createSession(sdp)</literal> (possibly under control of a parent sbb that has negotiated the session description). Incoming messages are handled with <literal>onMessageIn(event, aci)</literal>, assuming the appropriate <literal>sbb-jar.xml</literal> contains the event definition. Sending a message can be done with <literal>sendMessaage(content)</literal> and further methods to demonstrate nickname and composing functionality.</para>
+		
+		<programlisting language="Java" role="JAVA">
+			<![CDATA[
+    import java.util.UUID;
+
+    import javax.slee.ActivityContextInterface;
+    import javax.slee.SbbContext;
+    import javax.slee.facilities.Tracer;
+
+    import org.mobicents.slee.resource.msrp.MsrpActivityContextInterfaceFactory;
+    import org.mobicents.slee.resource.msrp.MsrpResourceAdaptorSbbInterface;
+    import org.mobicents.slee.resource.msrp.MsrpSession;
+
+    import javax.naming.Context;
+    import javax.naming.InitialContext;
+    import javax.net.msrp.exceptions.ParseException;
+    import javax.net.msrp.exceptions.IllegalUseException;
+    import javax.net.msrp.ConnectionLostEvent;
+    import javax.net.msrp.IncomingMessage;
+    import javax.net.msrp.IncomingStatusMessage;
+    import javax.net.msrp.NicknameEvent;
+    import javax.net.msrp.ReportEvent;
+    import javax.net.msrp.ResponseCode;
+
+    /**
+     * MSRP chat handling example code
+     * @author tuijldert
+     */
+    public abstract class MsrpExampleSbb {
+        private transient Tracer trc;
+        protected SbbContext sbbContext;
+
+        private MsrpActivityContextInterfaceFactory	msrpAcif;
+        private MsrpResourceAdaptorSbbInterface		msrpIf;
+
+        public abstract MsrpAci asSbbActivityContextInterface(ActivityContextInterface aci);
+
+        /**
+         * Create a chat session
+         */
+        public void createSession(javax.sdp.SessionDescription sdp) {
+            MsrpSession ms = null;
+
+            String sessionId = UUID.randomUUID().toString();	// generate a unique id
+            setConnectionIdCmp(sessionId);
+            try {
+                if (sdp != null) {
+                    ms = msrpIf.connect(sessionId, sdp);
+                } else
+                    ms = msrpIf.connect(sessionId);
+                msrpAcif.getActivityContextInterface(ms).attach(sbbContext.getSbbLocalObject());
+                trc.fine(getConnectionIdCmp() + ": session created");
+            } catch (ParseException e) {
+                String reason = "Could not create chat session";
+                trc.severe(reason, e);
+            }
+        }
+
+        /**
+         * MSRP SEND operation received.
+         * event-name: MessageIn
+         * event-type-name: net.java.slee.resource.msrp.IncomingMessage
+         * @param event
+         * @param aci the msrp aci
+         */
+        public void onMessageIn(IncomingMessage event, ActivityContextInterface aci) {
+
+            if (event.isComplete()) {
+                trc.fine(String.format("%s: onMessageIn(id=[%s], size=[%d])",
+                                getConnectionIdCmp(), event.getMessageID(), event.getSize()));
+                if (event.getSize() > 0)
+                    trc.fine(event.getContent());
+            }
+        }
+
+        /**
+         * Send an MSRP message over this session with the given content.
+         * @param content	the actual content to send
+         */
+        public void sendMessage(String content) {
+            trc.fine(getConnectionIdCmp() + ": sending message");
+            getMsrpSession().sendMessage(content);
+        }
+
+        /**
+         * @return the attached MSRP session.
+         */
+        private MsrpSession getMsrpSession() {
+            for (ActivityContextInterface aci : sbbContext.getActivities()) {
+                if (aci.getActivity() instanceof MsrpSession)
+                    return (MsrpSession) aci.getActivity();
+            }
+            return null;
+        }
+
+        /**
+         * Received an MSRP NICKNAME operation, handle it.
+         * event-name: Nickname
+         * event-type-name: net.java.slee.resource.msrp.NicknameEvent
+         * @param event
+         * @param aci the msrp aci
+         */
+        public void onNickname(NicknameEvent event, ActivityContextInterface aci) {
+            int result = ResponseCode.RC200;
+            if (checkNickname(event.getNickname())) {
+                setNicknameCmp(event.getNickname());	// save
+            } else
+                result = ResponseCode.RC425;
+            try {
+                getMsrpSession().sendNickResult(event.getRequest(), result, null);
+            } catch (IllegalUseException e) {
+                trc.severe("Error sending result to nickname request", e);
+            }
+        }
+
+        /**
+         * @param nick the nickname to set
+         * @return whether the nickname is acceptable or not.
+         */
+        private boolean checkNickname(String nick) {
+            /*
+             * TODO: add a check whether this nickname is accceptable or not...
+             */
+            return true;
+        }
+
+        /**
+         * Compose indication received.
+         * event-name: StatusUpdate
+         * event-type-name: net.java.slee.resource.msrp.IncomingStatusMessage
+         * @param event the composing indication
+         * @param aci the msrp aci
+         */
+        public void onStatusUpdate(IncomingStatusMessage event, ActivityContextInterface aci) {
+            trc.fine(String.format("Compose indication received: state=%s, refresh=%d",
+                     event.getState().toString(), event.getRefresh()));
+        }
+
+        public void onReportReceived(ReportEvent event, ActivityContextInterface aci) {
+            // TODO: implement
+        }
+
+        public void onConnectionLost(ConnectionLostEvent event, ActivityContextInterface aci) {
+            getMsrpSession().disconnect();
+        }
+
+        /**
+         * There's an update on the message that has been sent
+         * (usually when sending has completed, or -in case of large messages-
+         * when the next 10% has been sent).
+         * @param event the update event
+         * @param aci
+         */
+        public void onUpdateSend(UpdateSendEvent event, ActivityContextInterface aci) {
+            if (event.getMessage().isComplete()) {
+            /*
+             * TODO: implement action when message has been completely sent.
+             */
+                ;
+            }
+        }
+
+        public void setSbbContext(SbbContext context) {
+            sbbContext = context;
+            this.trc = context.getTracer("MsrpExampleSbb");
+            try {
+                Context nameContext = (Context) new InitialContext().lookup("java:comp/env");
+
+                // activity-context-interface-factory-name
+                msrpAcif = (MsrpActivityContextInterfaceFactory)
+                            nameContext.lookup("slee/resources/msrp/1.0/acifactory");
+                // resource-adaptor-object-name
+                msrpIf = (MsrpResourceAdaptorSbbInterface)
+                        nameContext.lookup("slee/resources/msrp/1.0/sbbinterface");
+            } catch (Throwable e) {
+                trc.severe(e.getMessage());
+            }
+        }
+
+        // CMP fields
+        public abstract void setConnectionIdCmp(String value);
+        public abstract String getConnectionIdCmp();
+
+        public abstract void setNicknameCmp(String nickname);
+        public abstract String getNicknameCmp();
+	}]]>
+		</programlisting>
+	</section>
+
+</section>

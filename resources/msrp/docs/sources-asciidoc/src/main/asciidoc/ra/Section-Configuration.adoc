@@ -1,0 +1,27 @@
+[[_ra_configuration]]
+= Configuration
+(((configuration)))
+
+
+The Resource Adaptor supports configuration only at Resource Adaptor Entity creation time, the following table enumerates the configuration properties:
+(((properties)))
+
+.Resource Adaptor's Configuration Properties
+[cols="1,1,1,1", frame="all", options="header"]
+|===
+| Property Name
+| Description
+| Property Type
+| Default Value
+
+|slee.resource. msrp.ipaddress
+|IP address to use for MSRP connections
+|java.lang.String
+|0.0.0.0
+|===
+
+ifdef::backend-docbook[]
+[index]
+== Index
+// Generated automatically by the DocBook toolchain.
+endif::backend-docbook[]

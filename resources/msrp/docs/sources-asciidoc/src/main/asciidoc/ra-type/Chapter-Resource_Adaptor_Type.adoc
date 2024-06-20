@@ -1,0 +1,19 @@
+[[_ratype]]
+= Resource Adaptor Type
+
+The Resource Adaptor Type is the interface which defines the contract between the RA implementations, the SLEE container, and the Applications running in it.
+
+The name of the RA Type is ``MsrpResourceAdaptorType``, its vendor is `org.mobicents` and its version is ``1.0``.
+
+include::Section-Activities.adoc[]
+
+include::Section-Events.adoc[]
+
+include::Section-Activity_Context_Interface_Factory.adoc[]
+
+include::Section-Resource_Adaptor_Interface.adoc[]
+
+include::Section-Restrictions.adoc[]
+
+include::Section-Sbb_Code_Examples.adoc[]
+

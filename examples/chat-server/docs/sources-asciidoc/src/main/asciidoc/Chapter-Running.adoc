@@ -1,0 +1,9 @@
+[[_running]]
+= Running the Example
+
+
+To run the example application, start JAIN SLEE and wait for it to become active.
+
+Now start MSRP-aware VoIP clients and connect to your server. Make sure to use
+an identical username in the from field of the connect request. The clients now
+share a chat room.

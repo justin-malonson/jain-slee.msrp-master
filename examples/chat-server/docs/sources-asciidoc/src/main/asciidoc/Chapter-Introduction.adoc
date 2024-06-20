@@ -1,0 +1,13 @@
+[[_introduction]]
+= Introduction to the {this-platform} JAIN SLEE {this-example} Example
+
+This example application implements a rudimentary chat server to illustrate the
+use of the MSRP resource adaptor.
+
+The application creates or joins chatrooms on (SIP-)request, using the
+`INVITE`s' `To:` username as a chatroom identifier. +
+Once a participant in that room, your messages are automatically broedcast to
+the other participants in the room.
+
+The chatroom includes support for setting nicknames, indication of typing and
+the possibility to record the chat.
